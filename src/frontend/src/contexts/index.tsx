@@ -1,26 +1,28 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
-import { AlertProvider } from "./alertContext";
-import { DarkProvider } from "./darkContext";
-import { LocationProvider } from "./locationContext";
-import PopUpProvider from "./popUpContext";
-import { TabsProvider } from "./tabsContext";
-import { TypesProvider } from "./typesContext";
+import { BrowserRouter } from "react-router-dom";
+import { ReactFlowProvider } from "reactflow";
+import { TooltipProvider } from "../components/ui/tooltip";
+import { ApiInterceptor } from "../controllers/API/api";
+import { AuthProvider } from "./authContext";
 
 export default function ContextWrapper({ children }: { children: ReactNode }) {
-	//element to wrap all context
-	return (
-		<>
-			<DarkProvider>
-				<TypesProvider>
-					<LocationProvider>
-						<AlertProvider>
-							<TabsProvider>
-								<PopUpProvider>{children}</PopUpProvider>
-							</TabsProvider>
-						</AlertProvider>
-					</LocationProvider>
-				</TypesProvider>
-			</DarkProvider>
-		</>
-	);
+  const queryClient = new QueryClient();
+  //element to wrap all context
+  return (
+    <>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <TooltipProvider>
+              <ReactFlowProvider>
+                <ApiInterceptor />
+                {children}
+              </ReactFlowProvider>
+            </TooltipProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </>
+  );
 }

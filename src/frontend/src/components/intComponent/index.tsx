@@ -1,52 +1,54 @@
-import { useContext, useEffect, useState } from "react";
-import { FloatComponentType } from "../../types/components";
-import { TabsContext } from "../../contexts/tabsContext";
+import { useEffect } from "react";
+import { IntComponentType } from "../../types/components";
+import {
+  handleKeyDown,
+  handleOnlyIntegerInput,
+} from "../../utils/reactflowUtils";
+import { Input } from "../ui/input";
 
 export default function IntComponent({
-	value,
-	onChange,
-	disabled,
-}: FloatComponentType) {
-	const [myValue, setMyValue] = useState(value ?? "");
-	useEffect(() => {
-		if (disabled) {
-			setMyValue("");
-			onChange("");
-		}
-	}, [disabled, onChange]);
-	return (
-		<div
-			className={
-				disabled ? "pointer-events-none cursor-not-allowed w-full" : "w-full"
-			}
-		>
-			<input
-				onKeyDown={(event) => {
-					if (
-						event.key !== "Backspace" &&
-						event.key !== "Enter" &&
-						event.key !== "Delete" &&
-						event.key !== "ArrowLeft" &&
-						event.key !== "ArrowRight" &&
-						!/^[-]?\d*$/.test(event.key)
-					) {
-						event.preventDefault();
-					}
-				}}
-				type="number"
-				value={myValue}
-				className={
-					"block w-full form-input dark:bg-gray-900 arrow-hide dark:border-gray-600 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" +
-					(disabled ? " bg-gray-200 dark:bg-gray-700" : "")
-				}
-				placeholder="Type a integer number"
-				onChange={(e) => {
-					setMyValue(e.target.value);
-					onChange(e.target.value);
-				}}
-				
-			/>
-			
-		</div>
-	);
+  value,
+  onChange,
+  rangeSpec,
+  disabled,
+  editNode = false,
+  id = "",
+}: IntComponentType): JSX.Element {
+  const min = -Infinity;
+
+  // Clear component state
+  useEffect(() => {
+    if (disabled && value !== "") {
+      onChange("", undefined, true);
+    }
+  }, [disabled, onChange]);
+
+  return (
+    <div className="w-full">
+      <Input
+        id={id}
+        onKeyDown={(event) => {
+          handleOnlyIntegerInput(event);
+          handleKeyDown(event, value, "");
+        }}
+        type="number"
+        step={rangeSpec?.step ?? 1}
+        min={rangeSpec?.min ?? min}
+        max={rangeSpec?.max ?? undefined}
+        onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+          if (Number(event.target.value) < min) {
+            event.target.value = min.toString();
+          }
+        }}
+        value={value ?? ""}
+        className={editNode ? "input-edit-node" : ""}
+        disabled={disabled}
+        placeholder={editNode ? "Integer number" : "Type an integer number"}
+        onChange={(event) => {
+          onChange(event.target.value);
+        }}
+        data-testid={id}
+      />
+    </div>
+  );
 }

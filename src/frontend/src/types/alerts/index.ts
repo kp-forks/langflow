@@ -1,29 +1,31 @@
 export type ErrorAlertType = {
-	title: string;
-	list: Array<string>;
-	id: string;
-	removeAlert: (id: string) => void;
+  title: string;
+  list: Array<string> | undefined;
+  id: string;
+  removeAlert: (id: string) => void;
 };
 export type NoticeAlertType = {
-	title: string;
-	link: string;
-	id: string;
-	removeAlert: (id: string) => void;
+  title: string;
+  link: string | undefined;
+  id: string;
+  removeAlert: (id: string) => void;
 };
 export type SuccessAlertType = {
-	title: string;
-	id: string;
-	removeAlert: (id: string) => void;
+  title: string;
+  id: string;
+  removeAlert: (id: string) => void;
 };
 export type SingleAlertComponentType = {
-	dropItem: AlertItemType;
-	removeAlert: (index: string) => void;
+  dropItem: AlertItemType;
+  removeAlert: (index: string) => void;
 };
-export type AlertDropdownType = {};
+export type AlertDropdownType = {
+  children: JSX.Element;
+};
 export type AlertItemType = {
-	type: "notice" | "error" | "success";
-	title: string;
-	link?: string;
-	list?: Array<string>;
-	id: string;
+  type: "notice" | "error" | "success";
+  title: string;
+  link?: string;
+  list?: Array<string>;
+  id: string;
 };
